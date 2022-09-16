@@ -3,13 +3,14 @@ from dtos.Track import Track
 from dtos.WeeklyShow import WeeklyShow
 import json
 import requests
+from utils.utils import Utils
 
 
 class BandcampScrapeService:
     @staticmethod
     def scrape_weekly_show(show_id):
         url = f"https://bandcamp.com/?show={show_id}"
-        html_text = requests.get(url).text
+        html_text = Utils.execute_get_request(url).text
         soup = BeautifulSoup(html_text, "lxml")
         if soup:
             return json.loads(soup.find(id="pagedata")["data-blob"])
@@ -33,3 +34,7 @@ class BandcampScrapeService:
                           tracks_json["bcw_data"][str(show_id)]["audio_title"],
                           tracks_json["bcw_data"][str(show_id)]["audio_stream"],
                           tracks)
+
+    def get_available_shows(self) -> list:
+        show_json = self.scrape_weekly_show(1)
+        return show_json["bcw_seq_details"]["show_ids"]
