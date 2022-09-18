@@ -1,22 +1,31 @@
 from bs4 import BeautifulSoup
+from fastapi import HTTPException
 from dtos.Track import Track
 from dtos.WeeklyShow import WeeklyShow
+from dtos.Album import Album
 from utils.utils import Utils
 import json
-from dtos.Album import Album
 
 
 class BandcampScrapeService:
-    @staticmethod
-    def scrape_weekly_show(show_id: int):
+    essential_genres = ["electronic", "metal", "rock", "alternative", "hip-hop-rap",
+                        "experimental", "punk", "pop", "ambient"]
+
+    def scrape_weekly_show(self, show_id: int):
+        available_shows = self.get_available_shows()
+        if show_id not in available_shows:
+            raise HTTPException(status_code=404, detail="Bandcamp Weekly Show ID not found")
+
         url = f"https://bandcamp.com/?show={show_id}"
         html_text = Utils.execute_get_request(url).text
         soup = BeautifulSoup(html_text, "lxml")
         if soup:
             return json.loads(soup.find(id="pagedata")["data-blob"])
 
-    @staticmethod
-    def scrape_genre_essentials(genre: str):
+    def scrape_genre_essentials(self, genre: str):
+        if genre not in self.essential_genres:
+            raise HTTPException(status_code=404, detail=f"Bandcamp Genre Essentials not found. Genre essentials "
+                                                        f"available: {self.essential_genres}")
         url = f"https://bandcamp.com/tag/{genre}"
         html_text = Utils.execute_get_request(url).text
         soup = BeautifulSoup(html_text, "lxml")
