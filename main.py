@@ -22,15 +22,15 @@ def home():
 
 @app.get("/bcweekly")
 async def get_weekly_show_list(shows: Union[List[str], None] = Query(default=["shows"],
-                                                                     title="Query string",
-                                                                     description="Queryd match",
+                                                                     title="Query shows",
+                                                                     description="Get tracks of bandcamp weekly show",
                                                                      regex="^[0-9,]*$")):
     return service.get_weekly_show_list(shows)
 
 
 @app.get("/genre/essentials")
 async def get_genre_essentials(genres: Union[List[str], None] = Query(default=["genres"],
-                                                                      title="Query string",
-                                                                      description="Queryd match",
+                                                                      title="Query genre essentials",
+                                                                      description="Get essentials albums of genre",
                                                                       regex="[A-Za-z]")):
     return service.get_genre_essentials_list(genres)
