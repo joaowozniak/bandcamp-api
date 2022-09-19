@@ -20,13 +20,13 @@ class DataLoadService:
             raise HTTPException(status_code=404, detail="Valid Bandcamp Weekly Show ID not found")
         return shows_list
 
-    def get_weekly_show(self, show_id: int):
+    def get_weekly_show(self, show_id: str):
         if show_id not in self.get_available_shows():
             raise HTTPException(status_code=404, detail="Bandcamp Weekly Show ID not found")
-        return self.load_tracks(show_id, BandcampScrapeService.scrape_weekly_show(show_id))
+        return self.load_tracks(show_id, BandcampScrapeService.scrape_page(show_id, Constants.WEEKLY_SHOW_ENDPOINT))
 
     @staticmethod
-    def get_valid_shows(shows: str, available_shows: list) -> list:
+    def get_valid_shows(shows: list, available_shows: list) -> list:
         valid_shows = []
         for sh in shows[0].split(','):
             if int(sh) in available_shows:
@@ -49,7 +49,7 @@ class DataLoadService:
         if genre not in Constants.ESSENTIAL_GENRES:
             raise HTTPException(status_code=404, detail=f"Bandcamp Genre Essentials not found. Genre essentials "
                                                         f"available: {Constants.ESSENTIAL_GENRES}")
-        return self.load_albums(BandcampScrapeService.scrape_genre_essentials(genre))
+        return self.load_albums(BandcampScrapeService.scrape_page(genre, Constants.GENRE_ENDPOINT))
 
     @staticmethod
     def get_valid_genres(genres: list) -> list:
@@ -61,7 +61,7 @@ class DataLoadService:
 
     @staticmethod
     def get_available_shows() -> list:
-        show_json = BandcampScrapeService.scrape_weekly_show(1)
+        show_json = BandcampScrapeService.scrape_page("1", Constants.WEEKLY_SHOW_ENDPOINT)
         return show_json["bcw_seq_details"]["show_ids"]
 
     @staticmethod

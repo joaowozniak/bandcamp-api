@@ -29,8 +29,16 @@ async def get_weekly_show_list(shows: Union[List[str], None] = Query(default=["s
 
 
 @app.get("/genre/essentials")
-async def get_genre_essentials(genres: Union[List[str], None] = Query(default=["genres"],
-                                                                      title="Query genre essentials",
-                                                                      description="Get essentials albums of genre",
-                                                                      regex="[A-Za-z]")):
+async def get_genre_essentials_list(genres: Union[List[str], None] = Query(default=["genres"],
+                                                                           title="Query genre essentials",
+                                                                           description="Get essentials albums of genre",
+                                                                           regex="[A-Za-z]")):
+    return service.get_genre_essentials_list(genres)
+
+
+@app.get("/genre/highlights")
+async def get_genre_essentials_list(genres: Union[List[str], None] = Query(default=["highlights"],
+                                                                           title="Query genre highlights",
+                                                                           description="Get highlight albums of genre",
+                                                                           regex="[A-Za-z]")):
     return service.get_genre_essentials_list(genres)
