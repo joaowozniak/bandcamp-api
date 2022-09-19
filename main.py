@@ -1,42 +1,36 @@
 from typing import Union, List
-
-from fastapi import FastAPI, Query, HTTPException
-from services.BandcampScrapeService import BandcampScrapeService
+from fastapi import FastAPI, Query
+from services.DataLoadService import DataLoadService
 
 app = FastAPI()
-service = BandcampScrapeService()
+service = DataLoadService()
 
 
 @app.get("/")
 def home():
-    return {"Hello": "Bandcamp API"}
+    return {"Welcome to Bandcamp API":
+        {"Available endpoints":
+            {
+                "/bcweekly/?shows=ID1,ID2,...": [{"Description": "ETC"}],
+                "/genre/essentials/?genres=GENRE1,GENRE2,...": [{"Description": "ETC"}],
+                "/genre/highlights/?genres=GENRE1,GENRE2,...": [{"Description": "ETC"}],
+                "/albumoftheday": [{"Description": "ETC"}, {"Headers": {"dates": "DD-MM-YYYY, DD-MM-YYYY"}}]
+            }
+        }
+    }
 
 
-@app.get("/bcweekly/{show_id}")
-async def get_weekly_show(show_id: int):
-    return service.load_tracks(show_id, service.scrape_weekly_show(show_id))
+@app.get("/bcweekly")
+async def get_weekly_show_list(shows: Union[List[str], None] = Query(default=["shows"],
+                                                                     title="Query string",
+                                                                     description="Queryd match",
+                                                                     regex="^[0-9,]*$")):
+    return service.get_weekly_show_list(shows)
 
 
-@app.get("/bcweekly/list/")
-async def get_weekly_show_list(shows: Union[List[str], None] = Query(default=None)):
-    shows_list = []
-    valid_shows = service.get_valid_shows(shows, service.get_available_shows())
-
-    if len(valid_shows) != 0:
-        for sh in valid_shows:
-            show_obj = await get_weekly_show(sh)
-            shows_list.append(show_obj)
-    else:
-        raise HTTPException(status_code=404, detail="Valid Bandcamp Weekly Show ID not found")
-    return shows_list
-
-
-@app.get("/genre/essentials/{genre}")
-async def get_genre_essentials(genre: str):
-    if genre == "all":
-        all_essentials = []
-        for genre in service.essential_genres:
-            all_essentials.append(service.load_albums(service.scrape_genre_essentials(genre)))
-        return all_essentials
-
-    return service.load_albums(service.scrape_genre_essentials(genre))
+@app.get("/genre/essentials")
+async def get_genre_essentials(genres: Union[List[str], None] = Query(default=["genres"],
+                                                                      title="Query string",
+                                                                      description="Queryd match",
+                                                                      regex="[A-Za-z]")):
+    return service.get_genre_essentials_list(genres)
