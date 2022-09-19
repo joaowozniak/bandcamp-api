@@ -37,8 +37,8 @@ async def get_genre_essentials_list(genres: Union[List[str], None] = Query(defau
 
 
 @app.get("/genre/highlights")
-async def get_genre_essentials_list(genres: Union[List[str], None] = Query(default=["highlights"],
+async def get_genre_highlights_list(genres: Union[List[str], None] = Query(default=["highlights"],
                                                                            title="Query genre highlights",
                                                                            description="Get highlight albums of genre",
                                                                            regex="[A-Za-z]")):
-    return service.get_genre_essentials_list(genres)
+    return service.get_genre_highlights_list(genres)

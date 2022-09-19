@@ -5,3 +5,6 @@ class Constants:
     WEEKLY_SHOW_ENDPOINT = "https://bandcamp.com/?show="
 
     GENRE_ENDPOINT = "https://bandcamp.com/tag/"
+
+    ESSENTIALS_TAB = "essential_releases"
+    HIGHLIGHTS_TAB = "editors_picks"

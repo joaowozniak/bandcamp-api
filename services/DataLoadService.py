@@ -39,17 +39,17 @@ class DataLoadService:
         valid_genres = self.get_valid_genres(genres)
         if len(valid_genres) != 0:
             for genr in valid_genres:
-                genr_ess_obj = self.get_genre_essentials(genr)
+                genr_ess_obj = self.get_genre_essentials(genr, Constants.ESSENTIALS_TAB)
                 genre_essentials[genr] = genr_ess_obj
         else:
             raise HTTPException(status_code=404, detail="Valid Bandcamp Genre not found")
         return genre_essentials
 
-    def get_genre_essentials(self, genre: str) -> list:
+    def get_genre_essentials(self, genre: str, tab: str) -> list:
         if genre not in Constants.ESSENTIAL_GENRES:
             raise HTTPException(status_code=404, detail=f"Bandcamp Genre Essentials not found. Genre essentials "
                                                         f"available: {Constants.ESSENTIAL_GENRES}")
-        return self.load_albums(BandcampScrapeService.scrape_page(genre, Constants.GENRE_ENDPOINT))
+        return self.load_albums(BandcampScrapeService.scrape_page(genre, Constants.GENRE_ENDPOINT), tab)
 
     @staticmethod
     def get_valid_genres(genres: list) -> list:
@@ -59,17 +59,28 @@ class DataLoadService:
                 valid_genres.append(genr)
         return valid_genres
 
+    def get_genre_highlights_list(self, genres: list) -> dict:
+        genre_highlights = {}
+        valid_genres = self.get_valid_genres(genres)
+        if len(valid_genres) != 0:
+            for genr in valid_genres:
+                genr_ess_obj = self.get_genre_essentials(genr, Constants.HIGHLIGHTS_TAB)
+                genre_highlights[genr] = genr_ess_obj
+        else:
+            raise HTTPException(status_code=404, detail="Valid Bandcamp Genre not found")
+        return genre_highlights
+
     @staticmethod
     def get_available_shows() -> list:
         show_json = BandcampScrapeService.scrape_page("1", Constants.WEEKLY_SHOW_ENDPOINT)
         return show_json["bcw_seq_details"]["show_ids"]
 
     @staticmethod
-    def load_albums(albums_json) -> list:
+    def load_albums(albums_json, tab: str) -> list:
         albums = []
 
         for collection in albums_json["hub"]["tabs"][0]["collections"]:
-            if collection["name"] == "essential_releases":
+            if collection["name"] == tab:
                 for album_json in collection["items"]:
                     albums.append(Album(album_json["tralbum_id"], album_json["blurb"],
                                         album_json["title"], album_json["artist"],
