@@ -1,9 +1,8 @@
-from typing import Union, List
-from fastapi import FastAPI, Query
-from services.DataLoadService import DataLoadService
+from fastapi import FastAPI, Query, Header
+from services.BandcampService import BandcampService
 
-app = FastAPI()
-service = DataLoadService()
+app = FastAPI(debug=True)
+service = BandcampService()
 
 
 @app.get("/")
@@ -21,24 +20,29 @@ def home():
 
 
 @app.get("/bcweekly")
-async def get_weekly_show_list(shows: Union[List[str], None] = Query(default=["shows"],
-                                                                     title="Query shows",
-                                                                     description="Get tracks of bandcamp weekly show",
-                                                                     regex="^[0-9,]*$")):
-    return service.get_weekly_show_list(shows)
+async def get_weekly_shows(shows: str = Query(default=["shows"],
+                                              title="Query shows",
+                                              description="Get tracks of bandcamp weekly show",
+                                              regex="^[0-9,]*$")):
+    return service.get_weekly_shows(shows)
 
 
 @app.get("/genre/essentials")
-async def get_genre_essentials_list(genres: Union[List[str], None] = Query(default=["genres"],
-                                                                           title="Query genre essentials",
-                                                                           description="Get essentials albums of genre",
-                                                                           regex="[A-Za-z]")):
+async def get_genre_essentials(genres: str = Query(default=["genres"],
+                                                   title="Query genre essentials",
+                                                   description="Get essentials albums of genre",
+                                                   regex="[A-Za-z]")):
     return service.get_genre_essentials_list(genres)
 
 
 @app.get("/genre/highlights")
-async def get_genre_highlights_list(genres: Union[List[str], None] = Query(default=["highlights"],
-                                                                           title="Query genre highlights",
-                                                                           description="Get highlight albums of genre",
-                                                                           regex="[A-Za-z]")):
+async def get_genre_highlights(genres: str = Query(default=["highlights"],
+                                                   title="Query genre highlights",
+                                                   description="Get highlight albums of genre",
+                                                   regex="[A-Za-z]")):
     return service.get_genre_highlights_list(genres)
+
+
+@app.get("/aotd")
+async def get_album_of_the_day(day: str = Header(None)):
+    return service.get_album_of_day(day)
