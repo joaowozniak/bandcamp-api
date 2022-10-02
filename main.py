@@ -11,10 +11,14 @@ def home():
     return {"Welcome to Bandcamp API":
         {"Available endpoints":
             {
-                "/bcweekly/?shows=ID1,ID2,...": [{"Description": "ETC"}],
-                "/genre/essentials/?genres=GENRE1,GENRE2,...": [{"Description": "ETC"}],
-                "/genre/highlights/?genres=GENRE1,GENRE2,...": [{"Description": "ETC"}],
-                "/albumoftheday": [{"Description": "ETC"}, {"Headers": {"dates": "DD-MM-YYYY, DD-MM-YYYY"}}]
+                "/bcweekly/?shows=ID1,ID2,...": [{
+                    "Description": "Returns the tracks of bandcamp weekly show id."}],
+                "/genre/essentials/?genres=GENRE1,GENRE2,...": [
+                    {"Description": "Returns the essential albums of genre."}],
+                "/genre/highlights/?genres=GENRE1,GENRE2,...": [
+                    {"Description": "Returns the current album highlights of genre."}],
+                "/albumoftheday": [{"Description": "Returns the album of day of passed date."},
+                                   {"Headers": {"dates": "DD-MM-YYYY, DD-MM-YYYY"}}]
             }
         }
     }
