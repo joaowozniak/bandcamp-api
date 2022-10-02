@@ -2,11 +2,13 @@ from fastapi import FastAPI, Query, Header
 from services.BandcampService import BandcampService
 import uvicorn
 
-app = FastAPI(debug=True)
+app = FastAPI(title="Bandcamp API",
+              description="Obtain bandcamp music data",
+              version="1.0.0")
 service = BandcampService()
 
 
-@app.get("/")
+@app.get("/", tags=["Services"])
 def home():
     return {"Welcome to Bandcamp API":
         {"Available endpoints":
@@ -29,34 +31,36 @@ def home():
     }
 
 
-@app.get("/bcweekly")
-async def get_weekly_shows(shows: str = Query(default=["shows"],
+@app.get("/bcweekly", tags=["Services"])
+async def get_weekly_shows(shows: str = Query(default="1",
                                               title="Query shows",
                                               description="Get tracks of bandcamp weekly show",
                                               regex="^[0-9,]*$")):
     return service.weekly_show.get_weekly_shows(shows)
 
 
-@app.get("/genre/essentials")
-async def get_genre_essentials(genres: str = Query(default=["genres"],
+@app.get("/genre/essentials", tags=["Services"])
+async def get_genre_essentials(genres: str = Query(default="pop",
                                                    title="Query genre essentials",
                                                    description="Get essentials albums of genre",
                                                    regex="[A-Za-z]")):
     return service.genre.get_genre_essentials_list(genres)
 
 
-@app.get("/genre/highlights")
-async def get_genre_highlights(genres: str = Query(default=["highlights"],
+@app.get("/genre/highlights", tags=["Services"])
+async def get_genre_highlights(genres: str = Query(default="pop",
                                                    title="Query genre highlights",
                                                    description="Get highlight albums of genre",
                                                    regex="[A-Za-z]")):
     return service.genre.get_genre_highlights_list(genres)
 
 
-@app.get("/albumoftheday")
-async def get_album_of_the_day(day: str = Header(description="Get album of any given day")):
+@app.get("/albumoftheday", tags=["Services"])
+async def get_album_of_the_day(day: str = Header(default="30-09-2022",
+                                                 title="Query album of day",
+                                                 description="Get album of any given day")):
     return service.album_of_day.get_album_of_day(day)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run("main:app", port=8000, reload=True)

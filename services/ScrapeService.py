@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from utils.utils import Utils
 import json
-import re
 
 
 class ScrapeService:
