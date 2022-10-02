@@ -1,7 +1,6 @@
 from dtos.Track import Track
 from dtos.WeeklyShow import WeeklyShow
 from dtos.Album import Album
-from dtos.AlbumOfDay import AlbumOfDay
 
 
 class DataLoadService:
@@ -42,4 +41,4 @@ class DataLoadService:
     def load_album_of_day(album_info: list):
         artist, title = album_info[1].split(", ")
         day_str = album_info[0]
-        return AlbumOfDay(title, artist, day_str)
+        return Album(None, f"Album of day: {day_str}", title, artist, None, None, None, None)
