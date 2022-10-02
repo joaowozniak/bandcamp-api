@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Query, Header
 from services.BandcampService import BandcampService
+import uvicorn
 
 app = FastAPI(debug=True)
 service = BandcampService()
@@ -46,3 +47,7 @@ async def get_genre_highlights(genres: str = Query(default=["highlights"],
 @app.get("/aotd")
 async def get_album_of_the_day(day: str = Header(description="Get album of any given day")):
     return service.album_of_day.get_album_of_day(day)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
