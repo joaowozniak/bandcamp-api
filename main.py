@@ -11,14 +11,19 @@ def home():
     return {"Welcome to Bandcamp API":
         {"Available endpoints":
             {
-                "/bcweekly/?shows=ID1,ID2,...": [{
-                    "Description": "Returns the tracks of bandcamp weekly show id."}],
-                "/genre/essentials/?genres=GENRE1,GENRE2,...": [
-                    {"Description": "Returns the essential albums of genre."}],
-                "/genre/highlights/?genres=GENRE1,GENRE2,...": [
-                    {"Description": "Returns the current album highlights of genre."}],
-                "/albumoftheday": [{"Description": "Returns the album of day of passed date."},
-                                   {"Headers": {"dates": "DD-MM-YYYY, DD-MM-YYYY"}}]
+                "Bandcamp Weekly endpoint": {
+                    "Description": "Returns the tracks of bandcamp weekly show id.",
+                    "URL": "/bcweekly/?shows=ID1,ID2,..."},
+                "Bandcamp Genre Album Essentials endpoint":
+                    {"Description": "Returns the essential albums of genre.",
+                     "URL": "/genre/essentials/?genres=GENRE1,GENRE2,..."},
+                "Bandcamp Genre Album Highlights endpoint":
+                    {"Description": "Returns the current album highlights of genre.",
+                     "URL": "/genre/highlights/?genres=GENRE1,GENRE2,..."},
+                "Bandcamp Album Of The Day endpoint": {
+                    "Description": "Returns the album of day of passed date.",
+                    "URL": "/albumoftheday",
+                    "Headers": {"day": "DD-MM-YYYY"}}
             }
         }
     }
@@ -48,7 +53,7 @@ async def get_genre_highlights(genres: str = Query(default=["highlights"],
     return service.genre.get_genre_highlights_list(genres)
 
 
-@app.get("/aotd")
+@app.get("/albumoftheday")
 async def get_album_of_the_day(day: str = Header(description="Get album of any given day")):
     return service.album_of_day.get_album_of_day(day)
 
