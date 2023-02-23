@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Query, Header
-from services.BandcampService import BandcampService
+from services.bandcamp_service import BandcampService
 import uvicorn
 
 app = FastAPI(title="Bandcamp API",
