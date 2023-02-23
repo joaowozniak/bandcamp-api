@@ -1,3 +1,5 @@
+from http.client import HTTPException
+
 from fastapi import FastAPI, Query, Header
 from services.bandcamp_service import BandcampService
 import uvicorn
@@ -39,6 +41,14 @@ async def get_weekly_shows(shows: str = Query(default="1",
                                               description="Get tracks of bandcamp weekly show",
                                               regex="^[0-9,]*$")):
     return service.weekly_show.get_weekly_shows(shows)
+
+
+@app.post("/bcweekly/playlist", tags=["Services"])
+async def create_playlist_from_bcweekly():
+    playlist_url = service.playlist.create_playlist_from_bcweekly()
+    if not playlist_url:
+        raise HTTPException()
+    return {"message": "Playlist created successfully", "playlist_url": playlist_url}
 
 
 @app.get("/genre/essentials", tags=["Services"])
