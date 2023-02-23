@@ -10,25 +10,27 @@ service = BandcampService()
 
 @app.get("/", tags=["Services"])
 def home():
-    return {"Welcome to Bandcamp API":
-        {"Available endpoints":
-            {
-                "Bandcamp Weekly endpoint": {
-                    "Description": "Returns the tracks of bandcamp weekly show id.",
-                    "URL": "/bcweekly/?shows=ID1,ID2,..."},
-                "Bandcamp Genre Album Essentials endpoint":
-                    {"Description": "Returns the essential albums of genre.",
-                     "URL": "/genre/essentials/?genres=GENRE1,GENRE2,..."},
-                "Bandcamp Genre Album Highlights endpoint":
-                    {"Description": "Returns the current album highlights of genre.",
-                     "URL": "/genre/highlights/?genres=GENRE1,GENRE2,..."},
-                "Bandcamp Album Of The Day endpoint": {
-                    "Description": "Returns the album of day of passed date.",
-                    "URL": "/albumoftheday",
-                    "Headers": {"day": "DD-MM-YYYY"}}
-            }
+    endpoints = {
+        "Bandcamp Weekly endpoint": {
+            "Description": "Returns the tracks of bandcamp weekly show id.",
+            "URL": "/bcweekly/?shows=ID1,ID2,..."
+        },
+        "Bandcamp Genre Album Essentials endpoint": {
+            "Description": "Returns the essential albums of genre.",
+            "URL": "/genre/essentials/?genres=GENRE1,GENRE2,..."
+        },
+        "Bandcamp Genre Album Highlights endpoint": {
+            "Description": "Returns the current album highlights of genre.",
+            "URL": "/genre/highlights/?genres=GENRE1,GENRE2,..."
+        },
+        "Bandcamp Album Of The Day endpoint": {
+            "Description": "Returns the album of day of passed date.",
+            "URL": "/albumoftheday",
+            "Headers": {"day": "DD-MM-YYYY"}
         }
     }
+
+    return {"Welcome to Bandcamp API": {"Available endpoints": endpoints}}
 
 
 @app.get("/bcweekly", tags=["Services"])
